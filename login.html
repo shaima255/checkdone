@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Check Done</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #001f3f, #3d3d3d); /* Navy blue to grey */
+      color: #f8f5f2; /* Beige text */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header img {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      margin: 10px 0 5px;
+      font-size: 2rem;
+      color: #ffedcc;
+    }
+
+    header p {
+      color: #ccc;
+      font-style: italic;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    }
+
+    label {
+      text-align: left;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      width: 100%;
+      background-color: #f8f5f2;
+      color: #001f3f;
+    }
+
+    .error-message {
+      color: #FFD700;
+      font-size: 0.9rem;
+    }
+
+    button {
+      background-color: #ffc107;
+      color: #001f3f;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #003366;
+      color: white;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="images/right_sprite_square.png" alt="Check Done Logo">
+    <h1>Check Done</h1>
+    <p>Welcome Back!</p>
+  </header>
+
+  <form onsubmit="return false;">
+    <div>
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email">
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+    </div>
+
+    <div class="error-message" id="errorMsg"></div>
+
+    <button type="button" onclick="validateLogin()">Log In</button>
+  </form>
+
+  <footer>
+    &copy; 2025 Check Done. All rights reserved.
+  </footer>
+
+  <script>
+    function validateLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorDiv = document.getElementById('errorMsg');
+
+      let errorMessage = '';
+
+      if (!email && !password) {
+        errorMessage = 'Please enter your email and password.';
+      } else if (!email) {
+        errorMessage = 'Please enter your email.';
+      } else if (!password) {
+        errorMessage = 'Please enter your password.';
+      }
+
+      if (errorMessage) {
+        errorDiv.textContent = errorMessage;
+        return;
+      }
+
+      errorDiv.textContent = '';
+      window.location.href = 'Done Tick.html';
+    }
+  </script>
+
+</body>
+</html>

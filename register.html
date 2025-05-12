@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Check Done</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #001f3f, #3d3d3d); /* Navy blue to grey */
+      color: #f8f5f2; /* Light beige text */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #ffedcc;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.07);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    form h2 {
+      margin-bottom: 20px;
+      color: #ffedcc;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #f8f5f2;
+      color: #001f3f;
+    }
+
+    .form-group input[type="date"] {
+      color: #001f3f;
+    }
+
+    .submit-button {
+      width: 100%;
+      background-color: #ffc107;
+      color: #001f3f;
+      padding: 12px;
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-button:hover {
+      background-color: #003366;
+      color: white;
+    }
+
+    .error-message {
+      color: #FFD700;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="images/right_sprite_square.png" alt="Check Done Logo">
+    <h1>Check Done</h1>
+  </header>
+
+  <form onsubmit="return false;">
+    <h2>Register</h2>
+
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="firstName">
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="lastName">
+    </div>
+
+    <div class="form-group">
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" name="dob">
+    </div>
+
+    <div class="form-group">
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender">
+        <option value="">Select Gender</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+        <option value="other">Other</option>
+        <option value="prefer_not_say">Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password">
+    </div>
+
+    <div class="error-message" id="errorMsg"></div>
+
+    <button type="button" class="submit-button" onclick="validateRegistration()">Create Account</button>
+  </form>
+
+  <footer>
+    &copy; 2025 Check Done. All rights reserved.
+  </footer>
+
+  <script>
+    function validateRegistration() {
+      const firstName = document.getElementById('firstName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorDiv = document.getElementById('errorMsg');
+
+      let errors = [];
+
+      if (!firstName) errors.push('First name is required.');
+      if (!email) errors.push('Email is required.');
+      if (!password) {
+        errors.push('Password is required.');
+      } else if (password.length < 8) {
+        errors.push('Password must be at least 8 characters.');
+      }
+
+      if (errors.length > 0) {
+        errorDiv.innerHTML = errors.join('<br>');
+        return;
+      }
+
+      errorDiv.textContent = '';
+      window.location.href = 'Done Tick.html';
+    }
+  </script>
+
+</body>
+</html>

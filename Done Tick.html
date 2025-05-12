@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tick Done - Task Manager</title>
+  <style>
+    body {
+      background-color: #f5f5dc; /* Beige */
+      color: #001f3f; /* Navy Blue */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #001f3f; /* Navy Blue */
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    header img {
+      height: 120px;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-top: 10px;
+      color: white;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .progress-bar {
+      flex-grow: 1;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-right: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #004080; /* darker navy */
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 10px;
+      background-color: #003366; /* Navy */
+    }
+
+    nav button {
+      background-color: #0074D9;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    nav button:hover {
+      background-color: #005fa3;
+    }
+
+    .tasks {
+      padding: 20px;
+    }
+
+    .task {
+      background-color: #e0e0e0;
+      color: #001f3f;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .deadline {
+      font-weight: bold;
+    }
+
+    .deadline.green {
+      color: #2ECC40;
+    }
+
+    .deadline.red {
+      color: #FF4136;
+    }
+
+    button {
+      background-color: #001f3f;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    .input-form {
+      padding: 20px;
+      background-color: #f0f0f0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+
+    input[type="datetime-local"] {
+      min-width: 200px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #555;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="images/right_sprite_square.png" alt="Website Logo">
+    <h1>Chick Done</h1>
+  </header>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <img src="images/Christmas-Gift-Transparent-Image.png" alt="Reward" height="30">
+  </div>
+
+  <nav>
+    <button onclick="filterTasks('all')">All</button>
+    <button onclick="filterTasks('today')">Today</button>
+    <button onclick="filterTasks('week')">This Week</button>
+    <button onclick="filterTasks('month')">This Month</button>
+    <button onclick="filterTasks('year')">This Year</button>
+  </nav>
+
+  <div class="input-form">
+    <input type="text" id="taskTitle" placeholder="Task Title">
+    <input type="datetime-local" id="taskDue">
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <div class="tasks" id="tasksList"></div>
+
+  <audio id="doneSound" src="done.mp3"></audio>
+
+  <footer>
+    &copy; 2025 Tick Done. All rights reserved.
+  </footer>
+
+  <script>
+    let tasks = [];
+    let points = 0;
+    let currentFilter = 'all';
+
+    function updateProgress() {
+      const fill = document.getElementById('progressFill');
+      const percent = (points / 100) * 100;
+      fill.style.width = percent + '%';
+
+      if (points >= 100) {
+        alert('🎉 Congratulations! You have earned 1 month free membership! 🎉');
+        points = 0;
+        updateProgress();
+      }
+    }
+
+    function addTask() {
+      const titleInput = document.getElementById('taskTitle');
+      const dueInput = document.getElementById('taskDue');
+      const title = titleInput.value;
+      const due = new Date(dueInput.value);
+      if (!title || isNaN(due)) return alert('Please enter valid task and date');
+      tasks.push({ title, due, done: false });
+      titleInput.value = '';
+      dueInput.value = '';
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('tasksList');
+      container.innerHTML = '';
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfTomorrow = new Date(startOfToday);
+      startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+      const endOfWeek = new Date(now);
+      endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+      const filteredTasks = tasks.filter(task => {
+        if (currentFilter === 'today') {
+          return task.due >= startOfToday && task.due < startOfTomorrow;
+        } else if (currentFilter === 'week') {
+          return task.due >= now && task.due <= endOfWeek;
+        } else if (currentFilter === 'month') {
+          return task.due.getMonth() === now.getMonth() && task.due.getFullYear() === now.getFullYear();
+        } else if (currentFilter === 'year') {
+          return task.due.getFullYear() === now.getFullYear() &&
+                 !(task.due >= startOfToday && task.due < startOfTomorrow) &&
+                 !(task.due >= now && task.due <= endOfWeek) &&
+                 !(task.due.getMonth() === now.getMonth());
+        } else {
+          return true;
+        }
+      });
+
+      filteredTasks.sort((a, b) => a.due - b.due);
+
+      filteredTasks.forEach((task, index) => {
+        const timeDiff = task.due - now;
+        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        const deadlineClass = daysLeft > 1 ? 'green' : 'red';
+        const deadlineText = daysLeft > 1 ? `${daysLeft} days left` : `${daysLeft} day or less left`;
+        container.innerHTML += `
+          <div class="task">
+            <span>${task.title}</span>
+            <span class="deadline ${deadlineClass}">${deadlineText}</span>
+            <button onclick="completeTask(${index})">Done</button>
+          </div>
+        `;
+      });
+    }
+
+    function completeTask(index) {
+      const task = tasks[index];
+      const now = new Date();
+      const onTime = now <= task.due;
+      document.getElementById('doneSound').play();
+      alert(onTime ? 'Great job! Task completed on time!' : 'Task completed but not on time.');
+      if (onTime) points++;
+      tasks.splice(index, 1);
+      updateProgress();
+      renderTasks();
+    }
+
+    function filterTasks(filter) {
+      currentFilter = filter;
+      renderTasks();
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>
